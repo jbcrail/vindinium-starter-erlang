@@ -44,7 +44,7 @@ connect(Key, Url, Mode) ->
 connect(Key, Url, Mode, Turns) ->
     case inets:start() of
         ok ->
-            #context{key=Key, url=Url, mode=Mode, bot_module=?BOT, turns=Turns}.
+            {ok, #context{key=Key, url=Url, mode=Mode, bot_module=?BOT, turns=Turns}};
         {error, Reason} ->
             {error, Reason}
     end.
@@ -54,32 +54,41 @@ move(Context) ->
 
 post(Url, Params) ->
     Data = mochiweb_util:urlencode(Params),
-    httpc:request(post, {Url, [], "application/x-www-form-urlencoded", Data}, [], []).
+    Response = httpc:request(post, {Url, [], "application/x-www-form-urlencoded", Data}, [], []),
+    case Response of
+        {ok, {{_Version, 200, _Reason}, _Headers, Body}} ->
+            {ok, vindinium_state:from_json(Body)};
+        {ok, {{_Version, Status, Reason}, _Headers, _Body}} ->
+            {error, Status, Reason};
+        {error, Reason} ->
+            {error, Reason}
+    end.
 
 initial_state(Context) ->
     Url = string:join([?SERVER, "api", atom_to_list(Context#context.mode)], "/"),
     Key = Context#context.key,
     Turns = Context#context.turns,
-    {ok, {{_Version, 200, _Reason}, _Headers, Body}} = post(Url, [{key, Key}, {turns, Turns}, {map, "m1"}]),
-    vindinium_state:from_json(Body).
+    post(Url, [{key, Key}, {turns, Turns}, {map, "m1"}]).
 
 next_state(Context, State, Direction) ->
     Url = vindinium_state:play_url(State),
     Key = Context#context.key,
-    {ok, {{_Version, 200, _Reason}, _Headers, Body}} = post(Url, [{key, Key}, {dir, Direction}]),
-    vindinium_state:from_json(Body).
+    post(Url, [{key, Key}, {dir, Direction}]).
 
 %% @spec play(context()) ->
 %%       {ok, state()} |
-%%       {error, Err :: term()}
+%%       {error, Reason :: string()} |
+%%       {error, Status :: integer(), Reason :: string()}
 %% @doc Advance game until completion or an error is encountered.
 %%      Return a state value or error.
 play(Context) ->
     play(Context, initial_state(Context)).
 
-play(Context, State) ->
+play(Context, {ok, State}) ->
     Finished = vindinium_state:finished(State),
     if
         Finished  -> {ok, State};
         true      -> play(Context, next_state(Context, State, move(Context)))
-    end.
+    end;
+play(_Context, Error) ->
+    Error.
