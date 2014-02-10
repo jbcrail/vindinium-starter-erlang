@@ -4,4 +4,4 @@
 -export([move/1]).
 
 move(State) ->
-  "Stay".
+    vindinium_bot:random_direction().
