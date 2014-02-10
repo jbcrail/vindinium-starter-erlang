@@ -48,20 +48,17 @@ play(Context, State) ->
 
 post(Url, Params) ->
     Data = mochiweb_util:urlencode(Params),
-    io:format("~p~n", [Data]),
     httpc:request(post, {Url, [], "application/x-www-form-urlencoded", Data}, [], []).
 
 initial_state(Context) ->
     Url = string:join([?SERVER, "api", atom_to_list(Context#context.mode)], "/"),
     Key = Context#context.key,
     Turns = Context#context.turns,
-    io:format("~p ~p ~p~n", [Url, Key, Turns]),
     {ok, {{_Version, 200, _Reason}, _Headers, Body}} = post(Url, [{key, Key}, {turns, Turns}, {map, "m1"}]),
     vindinium_state:from_json(Body).
 
 next_state(Context, State, Direction) ->
     Url = vindinium_state:play_url(State),
     Key = Context#context.key,
-    io:format("~p ~p ~p~n", [Url, Key, Direction]),
     {ok, {{_Version, 200, _Reason}, _Headers, Body}} = post(Url, [{key, Key}, {dir, Direction}]),
     vindinium_state:from_json(Body).
