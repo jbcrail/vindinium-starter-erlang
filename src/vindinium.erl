@@ -14,37 +14,43 @@
                   turns :: integer()
                  }).
 
-%%
+-type context() :: #context{}.
 
+%% @spec connect(string()) ->
+%%       {ok, context()} |
+%%       {error, Err :: term()}
+%% @doc Connect to Vindinium server.  Return a context value or error.
 connect(Key) ->
     connect(Key, ?SERVER, ?MODE, ?TURNS).
 
+%% @spec connect(string(), string()) ->
+%%       {ok, context()} |
+%%       {error, Err :: term()}
+%% @doc Connect to Vindinium server.  Return a context value or error.
 connect(Key, Url) ->
     connect(Key, Url, ?MODE, ?TURNS).
 
+%% @spec connect(string(), string(), atom()) ->
+%%       {ok, context()} |
+%%       {error, Err :: term()}
+%% @doc Connect to Vindinium server.  Return a context value or error.
 connect(Key, Url, Mode) ->
     connect(Key, Url, Mode, ?TURNS).
 
+%% @spec connect(string(), string(), atom(), integer()) ->
+%%       {ok, context()} |
+%%       {error, Err :: term()}
+%% @doc Connect to Vindinium server.  Return a context value or error.
 connect(Key, Url, Mode, Turns) ->
-    inets:start(),
-    #context{key=Key, url=Url, mode=Mode, bot_module=?BOT, turns=Turns}.
-
-%%
+    case inets:start() of
+        ok ->
+            #context{key=Key, url=Url, mode=Mode, bot_module=?BOT, turns=Turns}.
+        {error, Reason} ->
+            {error, Reason}
+    end.
 
 move(Context) ->
     erlang:apply(Context#context.bot_module, move, [""]).
-
-play(Context) ->
-    play(Context, initial_state(Context)).
-
-play(Context, State) ->
-    Finished = vindinium_state:finished(State),
-    if
-        Finished  -> State;
-        true      -> play(Context, next_state(Context, State, move(Context)))
-    end.
-
-%%
 
 post(Url, Params) ->
     Data = mochiweb_util:urlencode(Params),
@@ -62,3 +68,18 @@ next_state(Context, State, Direction) ->
     Key = Context#context.key,
     {ok, {{_Version, 200, _Reason}, _Headers, Body}} = post(Url, [{key, Key}, {dir, Direction}]),
     vindinium_state:from_json(Body).
+
+%% @spec play(context()) ->
+%%       {ok, state()} |
+%%       {error, Err :: term()}
+%% @doc Advance game until completion or an error is encountered.
+%%      Return a state value or error.
+play(Context) ->
+    play(Context, initial_state(Context)).
+
+play(Context, State) ->
+    Finished = vindinium_state:finished(State),
+    if
+        Finished  -> {ok, State};
+        true      -> play(Context, next_state(Context, State, move(Context)))
+    end.
