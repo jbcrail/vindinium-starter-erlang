@@ -1,0 +1,24 @@
+#!/usr/bin/env escript
+%% -*- erlang -*-
+%%! -noshell -pa ebin -pa deps/mochiweb/ebin -pa deps/kvc/ebin
+
+-define(SERVER, "http://vindinium.org").
+-define(MODE, "training").
+-define(TURNS, "300").
+
+main([Key]) ->
+    main([Key, ?MODE, ?TURNS, ?SERVER]);
+
+main([Key, Mode]) ->
+    main([Key, Mode, ?TURNS, ?SERVER]);
+
+main([Key, Mode, Turns]) ->
+    main([Key, Mode, Turns, ?SERVER]);
+
+main([Key, Mode, Turns, Url]) ->
+    {ok, Context} = vindinium:connect(Key, Url, list_to_atom(Mode), list_to_integer(Turns)),
+    {ok, State} = vindinium:play(Context),
+    io:format("~p~n", [State]);
+
+main(_Args) ->
+    io:format("Usage: vindinium <secret-key> [<[training|arena]> [<turns>]]~n", []).
