@@ -85,10 +85,11 @@ play(Context) ->
     play(Context, initial_state(Context)).
 
 play(Context, {ok, State}) ->
-    Finished = vindinium_state:finished(State),
-    if
-        Finished  -> {ok, State};
-        true      -> play(Context, next_state(Context, State, move(Context)))
+    case vindinium_state:finished(State) of
+        true ->
+            {ok, State};
+        false ->
+            play(Context, next_state(Context, State, move(Context)))
     end;
 play(_Context, Error) ->
     Error.
