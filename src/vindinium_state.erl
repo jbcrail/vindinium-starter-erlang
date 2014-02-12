@@ -1,6 +1,6 @@
 -module(vindinium_state).
 
--export([from_json/1, finished/1, play_url/1]).
+-export([from_json/1, finished/1, play_url/1, winner/1]).
 
 -record(state, {game, hero, token, view_url, play_url}).
 -record(game, {id, turn, max_turns, heroes, board, finished}).
@@ -60,4 +60,14 @@ finished(State) ->
     State#state.game#game.finished.
 
 play_url(State) ->
-    binary_to_list(proplists:get_value(<<"playUrl">>, State)).
+    binary_to_list(State#state.play_url).
+
+max_hero(Hero, Acc) when Acc =:= undefined ->
+    Hero;
+max_hero(Hero, Acc) when Hero#hero.gold > Acc#hero.gold ->
+    Hero;
+max_hero(_, Acc) ->
+    Acc.
+
+winner(State) ->
+    lists:foldl(fun max_hero/2, undefined, State#state.game#game.heroes).
