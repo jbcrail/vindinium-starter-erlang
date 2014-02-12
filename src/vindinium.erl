@@ -49,8 +49,8 @@ connect(Key, Url, Mode, Turns) ->
             {error, Reason}
     end.
 
-move(Context) ->
-    erlang:apply(Context#context.bot_module, move, [""]).
+move(Context, State) ->
+    erlang:apply(Context#context.bot_module, move, [State]).
 
 post(Url, Params) ->
     Data = mochiweb_util:urlencode(Params),
@@ -89,7 +89,7 @@ play(Context, {ok, State}) ->
         true ->
             {ok, State};
         false ->
-            play(Context, next_state(Context, State, move(Context)))
+            play(Context, next_state(Context, State, move(Context, State)))
     end;
 play(_Context, Error) ->
     Error.
