@@ -1,4 +1,8 @@
-## vindinium-starter-erlang
+### About
+
+The official Erlang library for [Vindinium](http://vindinium.org), an
+Artificial Intelligence programming challenge.  The goal of this library
+is to provide the basic tools needed to create a bot in Erlang.
 
 ### Installation
 
