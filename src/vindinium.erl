@@ -1,20 +1,7 @@
 -module(vindinium).
+-include("vindinium.hrl").
 
 -export([connect/1, connect/2, connect/3, connect/4, play/1]).
-
--define(SERVER, "http://vindinium.org").
--define(MODE, training).
--define(BOT, random_bot).
--define(TURNS, 300).
-
--record(context, {key :: string(),
-                  url :: string(),
-                  mode :: atom(),
-                  bot_module :: atom(),
-                  turns :: integer()
-                 }).
-
--type context() :: #context{}.
 
 %% @spec connect(string()) ->
 %%       {ok, context()} |
