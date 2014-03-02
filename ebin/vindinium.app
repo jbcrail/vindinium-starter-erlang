@@ -3,6 +3,7 @@
    {vsn, "0.0.1"},
    {modules, [vindinium,
               vindinium_state,
+              vindinium_board,
               vindinium_bot,
               random_bot,
               fighter_bot,

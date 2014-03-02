@@ -5,4 +5,4 @@
 
 move(State) ->
     timer:sleep(1500),
-    vindinium_bot:random_direction().
+    vindinium_bot:random_direction(State).

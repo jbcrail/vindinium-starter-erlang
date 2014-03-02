@@ -4,9 +4,12 @@
 -export([from_json/1, finished/1, play_url/1, winner/1]).
 
 to_board(Proplist) ->
+    Size = proplists:get_value(<<"size">>, Proplist),
+    Tiles = proplists:get_value(<<"tiles">>, Proplist),
     #board{
-      size=proplists:get_value(<<"size">>, Proplist),
-      tiles=proplists:get_value(<<"tiles">>, Proplist)
+      size=Size,
+      tiles=Tiles,
+      directions=vindinium_board:to_directions(Size, Tiles)
       }.
 
 to_position(Proplist) ->

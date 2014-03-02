@@ -4,4 +4,4 @@
 -export([move/1]).
 
 move(State) ->
-    vindinium_bot:random_direction().
+    vindinium_board:nearest_opponent(State).

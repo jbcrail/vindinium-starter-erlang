@@ -1,12 +1,10 @@
 -module(vindinium_bot).
+-include("vindinium.hrl").
 
--export([directions/0, random_direction/0]).
+-export([random_direction/1]).
 
 -callback move(_State) -> string().
 
-directions() ->
-    ["Stay", "North", "South", "East", "West"].
-
-random_direction() ->
-    Directions = directions(),
-    lists:nth(random:uniform(length(Directions)), Directions).
+random_direction(State) ->
+    Valid = vindinium_board:valid_moves(State),
+    lists:nth(random:uniform(length(Valid)), Valid).

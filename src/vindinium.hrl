@@ -45,10 +45,21 @@
 
 -record(board, {
           size,
-          tiles
+          tiles,
+          directions
          }).
 
 -record(position, {
           x,
           y
+         }).
+
+-record(directions, {
+          valid :: list(),
+          hero2 :: string(),
+          hero3 :: string(),
+          hero4 :: string(),
+          nearest_hero :: string(),
+          nearest_tavern :: string(),
+          nearest_neutral_mine :: string() | undefined
          }).
