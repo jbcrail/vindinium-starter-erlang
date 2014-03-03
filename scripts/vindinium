@@ -5,18 +5,21 @@
 -include("../src/vindinium.hrl").
 
 main([Key]) ->
-    main([Key, ?MODE, ?TURNS, ?SERVER]);
+    main([Key, ?MODE, ?BOT, ?TURNS, ?SERVER]);
 
 main([Key, Mode]) ->
-    main([Key, list_to_atom(Mode), ?TURNS, ?SERVER]);
+    main([Key, list_to_atom(Mode), ?BOT, ?TURNS, ?SERVER]);
 
-main([Key, Mode, Turns]) ->
-    main([Key, list_to_atom(Mode), list_to_integer(Turns), ?SERVER]);
+main([Key, Mode, Bot]) ->
+    main([Key, list_to_atom(Mode), list_to_atom(Bot), ?TURNS, ?SERVER]);
 
-main([Key, Mode, Turns, Url]) ->
-    {ok, Context} = vindinium:connect(Key, Url, Mode, Turns),
+main([Key, Mode, Bot, Turns]) ->
+    main([Key, list_to_atom(Mode), list_to_atom(Bot), list_to_integer(Turns), ?SERVER]);
+
+main([Key, Mode, Bot, Turns, Url]) ->
+    {ok, Context} = vindinium:connect(Key, Url, Mode, Bot, Turns),
     {ok, State} = vindinium:play(Context),
     io:format("~p~n", [vindinium_state:winner(State)]);
 
 main(_Args) ->
-    io:format("Usage: vindinium <secret-key> [<[training|arena]> [<turns>]]~n", []).
+    io:format("Usage: vindinium <secret-key> [<[training|arena]> [<bot> [<turns>]]]~n", []).

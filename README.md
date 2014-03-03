@@ -15,12 +15,13 @@ is to provide the basic tools needed to create a bot in Erlang.
 To start a game from the command line without accessing the API, the
 syntax is:
 
-    scripts/vindinium <secret-key> [<[training|arena]> [<turns>]]
+    scripts/vindinium <secret-key> [<[training|arena]> [<bot> [<turns>]]]
 
 For example:
 
-    $ scripts/vindinium secretKey training 30
-    $ scripts/vindinium secretKey arena 100
+    $ scripts/vindinium secretKey training fighter_bot
+    $ scripts/vindinium secretKey training random_bot 30
+    $ scripts/vindinium secretKey arena random_bot 100
 
 ### API Usage
 
@@ -38,4 +39,3 @@ need two function calls:
 ### TODO
 
 * Improve accessor functions for game state
-* Allow user to pass custom bot modules to API

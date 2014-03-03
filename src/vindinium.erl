@@ -1,7 +1,7 @@
 -module(vindinium).
 -include("vindinium.hrl").
 
--export([connect/1, connect/2, connect/3, connect/4, play/1]).
+-export([connect/1, connect/2, connect/3, connect/4, connect/5, play/1]).
 
 %% @spec connect(string()) ->
 %%       {ok, context()} |
@@ -15,23 +15,30 @@ connect(Key) ->
 %%       {error, Err :: term()}
 %% @doc Connect to Vindinium server.  Return a context value or error.
 connect(Key, Url) ->
-    connect(Key, Url, ?MODE, ?TURNS).
+    connect(Key, Url, ?MODE, ?BOT, ?TURNS).
 
 %% @spec connect(string(), string(), atom()) ->
 %%       {ok, context()} |
 %%       {error, Err :: term()}
 %% @doc Connect to Vindinium server.  Return a context value or error.
 connect(Key, Url, Mode) ->
-    connect(Key, Url, Mode, ?TURNS).
+    connect(Key, Url, Mode, ?BOT, ?TURNS).
 
-%% @spec connect(string(), string(), atom(), integer()) ->
+%% @spec connect(string(), string(), atom(), atom()) ->
 %%       {ok, context()} |
 %%       {error, Err :: term()}
 %% @doc Connect to Vindinium server.  Return a context value or error.
-connect(Key, Url, Mode, Turns) ->
+connect(Key, Url, Mode, Bot) ->
+    connect(Key, Url, Mode, Bot, ?TURNS).
+
+%% @spec connect(string(), string(), atom(), atom(), integer()) ->
+%%       {ok, context()} |
+%%       {error, Err :: term()}
+%% @doc Connect to Vindinium server.  Return a context value or error.
+connect(Key, Url, Mode, Bot, Turns) ->
     case inets:start() of
         ok ->
-            {ok, #context{key=Key, url=Url, mode=Mode, bot_module=?BOT, turns=Turns}};
+            {ok, #context{key=Key, url=Url, mode=Mode, bot_module=Bot, turns=Turns}};
         {error, Reason} ->
             {error, Reason}
     end.
