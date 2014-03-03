@@ -1,7 +1,7 @@
 -module(vindinium_state).
 -include("vindinium.hrl").
 
--export([from_json/1, finished/1, play_url/1, winner/1]).
+-export([from_json/1, life/1, finished/1, play_url/1, winner/1]).
 
 to_board(Proplist) ->
     Size = proplists:get_value(<<"size">>, Proplist),
@@ -53,6 +53,9 @@ to_state(Proplist) ->
 
 from_json(Json) ->
     to_state(kvc:to_proplist(mochijson2:decode(Json))).
+
+life(State) ->
+    State#state.hero#hero.life.
 
 finished(State) ->
     State#state.game#game.finished.
