@@ -1,6 +1,6 @@
 -define(SERVER, "http://vindinium.org").
 -define(MODE, training).
--define(BOT, greedy_bot).
+-define(BOT, random_bot).
 -define(TURNS, 300).
 
 -record(context, {
