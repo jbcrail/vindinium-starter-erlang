@@ -7,6 +7,7 @@
               vindinium_bot,
               random_bot,
               fighter_bot,
+              greedy_bot,
               slow_bot]},
    {registered, []},
    {applications, [kernel, stdlib, sasl]},
