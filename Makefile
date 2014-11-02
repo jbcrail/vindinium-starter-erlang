@@ -5,4 +5,5 @@ all:
 	$(REBAR) compile
 
 clean:
+	rm -rf deps
 	$(REBAR) clean
